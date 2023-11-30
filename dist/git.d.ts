@@ -14,7 +14,7 @@ export default class Git {
     createPrBranch(): Promise<void>;
     add(file: string): Promise<string>;
     hasChanges(): Promise<boolean>;
-    commit(msg?: string): Promise<string>;
+    commit(message?: string): Promise<string>;
     status(): Promise<string>;
     push(): Promise<string>;
     getLastCommitMsg(filePath: string): Promise<string>;

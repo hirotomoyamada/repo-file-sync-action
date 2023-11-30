@@ -44094,9 +44094,7 @@ try {
         COMMIT_BODY: (0,lib.getInput)("COMMIT_BODY", {
             default: "",
         }),
-        COMMIT_PREFIX: (0,lib.getInput)("COMMIT_PREFIX", {
-            default: "🔄",
-        }),
+        PR_TITLE: (0,lib.getInput)("PR_TITLE", {}),
         COMMIT_EACH_FILE: (0,lib.getInput)("COMMIT_EACH_FILE", {
             type: "boolean",
             default: true,
@@ -44351,8 +44349,9 @@ const remove = async (path) => {
 
 
 
-const { GITHUB_TOKEN, GIT_USERNAME, GIT_EMAIL, TMP_DIR, COMMIT_BODY, COMMIT_PREFIX, GITHUB_REPOSITORY, OVERWRITE_EXISTING_PR, BRANCH_PREFIX, } = context;
 
+
+const { PR_TITLE, GITHUB_TOKEN, GIT_USERNAME, GIT_EMAIL, TMP_DIR, COMMIT_BODY, GITHUB_REPOSITORY, OVERWRITE_EXISTING_PR, BRANCH_PREFIX, } = context;
 class Git {
     github;
     existingPr;
@@ -44414,7 +44413,7 @@ class Git {
     async createPrBranch() {
         const prefix = BRANCH_PREFIX.replace("SOURCE_REPO_NAME", GITHUB_REPOSITORY.split("/")[1]);
         let newBranch = external_path_default().join(prefix, this.repo.branch);
-        if (OVERWRITE_EXISTING_PR === false) {
+        if (!OVERWRITE_EXISTING_PR) {
             newBranch += `-${Math.round(new Date().getTime() / 1000)}`;
         }
         core.debug(`Creating PR Branch ${newBranch}`);
@@ -44428,10 +44427,10 @@ class Git {
         const statusOutput = await execCmd(`git status --porcelain`, this.workingDir);
         return (0,porcelain.parse)(statusOutput).length !== 0;
     }
-    async commit(msg) {
-        let message = msg !== undefined
-            ? msg
-            : `${COMMIT_PREFIX} Synced file(s) with ${GITHUB_REPOSITORY}`;
+    async commit(message) {
+        message = !isUndefined(message)
+            ? message
+            : `Synced file(s) with ${GITHUB_REPOSITORY}`;
         if (COMMIT_BODY) {
             message += `\n\n${COMMIT_BODY}`;
         }
@@ -44500,7 +44499,7 @@ class Git {
         const { data } = await this.github.pulls.create({
             owner: this.repo.user,
             repo: this.repo.name,
-            title: `${COMMIT_PREFIX} Synced file(s) with ${GITHUB_REPOSITORY}`,
+            title: PR_TITLE ?? `Synced file(s) with ${GITHUB_REPOSITORY}`,
             body: body,
             head: this.prBranch,
             base: this.baseBranch,
@@ -44533,7 +44532,7 @@ class Git {
 
 
 
-const { COMMIT_PREFIX: src_COMMIT_PREFIX, OVERWRITE_EXISTING_PR: src_OVERWRITE_EXISTING_PR, DRY_RUN, COMMIT_EACH_FILE, SKIP_CLEANUP, TMP_DIR: src_TMP_DIR, SKIP_PR, ASSIGNEES, PR_LABELS, } = context;
+const { OVERWRITE_EXISTING_PR: src_OVERWRITE_EXISTING_PR, DRY_RUN, COMMIT_EACH_FILE, SKIP_CLEANUP, TMP_DIR: src_TMP_DIR, SKIP_PR, ASSIGNEES, PR_LABELS, } = context;
 const run = async () => {
     const git = new Git();
     const repos = await parseConfig();
@@ -44583,11 +44582,11 @@ const run = async () => {
                         : "";
                     const message = {
                         true: {
-                            commit: `${src_COMMIT_PREFIX} Synced local '${dest}' with remote '${source}'`,
+                            commit: `Synced local '${dest}' with remote '${source}'`,
                             pr: `Synced local ${directory} <code>${dest}</code> with remote ${directory} <code>${source}</code>`,
                         },
                         false: {
-                            commit: `${src_COMMIT_PREFIX} Created local '${dest}' from remote '${source}'`,
+                            commit: `Created local '${dest}' from remote '${source}'`,
                             pr: `Created local ${directory} <code>${dest}</code> ${otherFiles} from remote ${directory} <code>${source}</code>`,
                         },
                     };
