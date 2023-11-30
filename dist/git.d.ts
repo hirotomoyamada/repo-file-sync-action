@@ -11,6 +11,7 @@ export default class Git {
     clone(): Promise<string>;
     setIdentity(): Promise<string>;
     getBaseBranch(): Promise<void>;
+    checkout(newBranch: string): Promise<void>;
     createPrBranch(): Promise<void>;
     add(file: string): Promise<string>;
     hasChanges(): Promise<boolean>;

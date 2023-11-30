@@ -44104,6 +44104,7 @@ try {
             type: "array",
             disableable: true,
         }),
+        TARGET_BRANCH: (0,lib.getInput)("TARGET_BRANCH", {}),
         ASSIGNEES: (0,lib.getInput)("ASSIGNEES", {
             type: "array",
         }),
@@ -44410,6 +44411,10 @@ class Git {
     async getBaseBranch() {
         this.baseBranch = await execCmd(`git rev-parse --abbrev-ref HEAD`, this.workingDir);
     }
+    async checkout(newBranch) {
+        core.debug(`Creating Branch ${newBranch}`);
+        await execCmd(`git checkout -b "${newBranch}"`, this.workingDir);
+    }
     async createPrBranch() {
         const prefix = BRANCH_PREFIX.replace("SOURCE_REPO_NAME", GITHUB_REPOSITORY.split("/")[1]);
         let newBranch = external_path_default().join(prefix, this.repo.branch);
@@ -44532,7 +44537,7 @@ class Git {
 
 
 
-const { OVERWRITE_EXISTING_PR: src_OVERWRITE_EXISTING_PR, DRY_RUN, COMMIT_EACH_FILE, SKIP_CLEANUP, TMP_DIR: src_TMP_DIR, SKIP_PR, ASSIGNEES, PR_LABELS, } = context;
+const { TARGET_BRANCH, OVERWRITE_EXISTING_PR: src_OVERWRITE_EXISTING_PR, DRY_RUN, COMMIT_EACH_FILE, SKIP_CLEANUP, TMP_DIR: src_TMP_DIR, SKIP_PR, ASSIGNEES, PR_LABELS, } = context;
 const run = async () => {
     const git = new Git();
     const repos = await parseConfig();
@@ -44555,6 +44560,9 @@ const run = async () => {
                     core.info(`Found existing PR ${existingPr.number}`);
                     await git.setPrWarning();
                 }
+            }
+            else if (isString(TARGET_BRANCH)) {
+                await git.checkout(TARGET_BRANCH);
             }
             core.info(`Locally syncing file(s) between source and target repository`);
             const modified = [];
