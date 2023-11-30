@@ -3,7 +3,7 @@ description: "GitHub Actions that sync's two (or more) repos."
 author: "Hirotomo Yamada"
 
 inputs:
-  GH_PAT:
+  GITHUB_TOKEN:
     description: |
       GitHub Personal Access Token to use to get repos and write secrets
     required: false
@@ -25,7 +25,7 @@ inputs:
     required: false
   TARGET_BRANCH:
     description: |
-      new branch in the target repo.
+      Valid when SKIP_PR is true. A new branch of the target repo.
   COMMIT_BODY:
     description: |
       Commit message body. Will be appended to commit message, separated by two line returns. Defaults to ''

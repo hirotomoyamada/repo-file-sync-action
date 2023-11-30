@@ -13,7 +13,7 @@ let context: Record<string, InputValue>
 
 try {
   context = {
-    GITHUB_TOKEN: getInput("GH_PAT", {
+    GITHUB_TOKEN: getInput("GITHUB_TOKEN", {
       required: true,
     }),
     GIT_EMAIL: getInput("GIT_EMAIL", {}),
@@ -68,7 +68,7 @@ try {
   if (isString(context.GITHUB_TOKEN)) {
     core.setSecret(context.GITHUB_TOKEN)
   } else {
-    throw new Error("Failed: Not found GH_PAT")
+    throw new Error("Failed: Not found GITHUB_TOKEN")
   }
 
   core.debug(JSON.stringify(context, null, 2))
