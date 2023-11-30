@@ -19,10 +19,13 @@ inputs:
     description: |
       People to assign to the pull request. Defaults to none
     required: false
-  COMMIT_PREFIX:
+  PR_TITLE:
     description: |
-      Prefix for commit message and pull request title. Defaults to 🔄
+      pull request title.
     required: false
+  TARGET_BRANCH:
+    description: |
+      new branch in the target repo.
   COMMIT_BODY:
     description: |
       Commit message body. Will be appended to commit message, separated by two line returns. Defaults to ''
