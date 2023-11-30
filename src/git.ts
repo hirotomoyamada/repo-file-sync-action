@@ -3,21 +3,21 @@ import * as core from "@actions/core"
 import { GitHub, getOctokitOptions } from "@actions/github/lib/utils"
 import { throttling } from "@octokit/plugin-throttling"
 import { parse } from "@putout/git-status-porcelain"
+import { isUndefined } from "./assertion"
 import { context } from "./config"
+import { dedent, execCmd } from "./helpers"
 
 const {
+  PR_TITLE,
   GITHUB_TOKEN,
   GIT_USERNAME,
   GIT_EMAIL,
   TMP_DIR,
   COMMIT_BODY,
-  COMMIT_PREFIX,
   GITHUB_REPOSITORY,
   OVERWRITE_EXISTING_PR,
   BRANCH_PREFIX,
 } = context
-
-import { dedent, execCmd } from "./helpers"
 
 export default class Git {
   github: any
@@ -116,7 +116,7 @@ export default class Git {
 
     let newBranch = path.join(prefix, this.repo.branch)
 
-    if (OVERWRITE_EXISTING_PR === false) {
+    if (!OVERWRITE_EXISTING_PR) {
       newBranch += `-${Math.round(new Date().getTime() / 1000)}`
     }
 
@@ -140,14 +140,15 @@ export default class Git {
     return parse(statusOutput).length !== 0
   }
 
-  async commit(msg?: string) {
-    let message =
-      msg !== undefined
-        ? msg
-        : `${COMMIT_PREFIX} Synced file(s) with ${GITHUB_REPOSITORY}`
+  async commit(message?: string) {
+    message = !isUndefined(message)
+      ? message
+      : `Synced file(s) with ${GITHUB_REPOSITORY}`
+
     if (COMMIT_BODY) {
       message += `\n\n${COMMIT_BODY}`
     }
+
     return execCmd(`git commit -m "${message}"`, this.workingDir)
   }
 
@@ -234,7 +235,7 @@ export default class Git {
     const { data } = await this.github.pulls.create({
       owner: this.repo.user,
       repo: this.repo.name,
-      title: `${COMMIT_PREFIX} Synced file(s) with ${GITHUB_REPOSITORY}`,
+      title: PR_TITLE ?? `Synced file(s) with ${GITHUB_REPOSITORY}`,
       body: body,
       head: this.prBranch,
       base: this.baseBranch,

@@ -24,9 +24,7 @@ try {
     COMMIT_BODY: getInput("COMMIT_BODY", {
       default: "",
     }),
-    COMMIT_PREFIX: getInput("COMMIT_PREFIX", {
-      default: "🔄",
-    }),
+    PR_TITLE: getInput("PR_TITLE", {}),
     COMMIT_EACH_FILE: getInput("COMMIT_EACH_FILE", {
       type: "boolean",
       default: true,

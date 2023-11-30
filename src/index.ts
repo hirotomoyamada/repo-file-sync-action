@@ -14,7 +14,6 @@ import {
 } from "./helpers"
 
 const {
-  COMMIT_PREFIX,
   OVERWRITE_EXISTING_PR,
   DRY_RUN,
   COMMIT_EACH_FILE,
@@ -102,11 +101,11 @@ const run = async (): Promise<void> => {
 
           const message: Dict<Dict<string>> = {
             true: {
-              commit: `${COMMIT_PREFIX} Synced local '${dest}' with remote '${source}'`,
+              commit: `Synced local '${dest}' with remote '${source}'`,
               pr: `Synced local ${directory} <code>${dest}</code> with remote ${directory} <code>${source}</code>`,
             },
             false: {
-              commit: `${COMMIT_PREFIX} Created local '${dest}' from remote '${source}'`,
+              commit: `Created local '${dest}' from remote '${source}'`,
               pr: `Created local ${directory} <code>${dest}</code> ${otherFiles} from remote ${directory} <code>${source}</code>`,
             },
           }
