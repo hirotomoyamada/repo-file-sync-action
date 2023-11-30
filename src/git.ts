@@ -108,6 +108,12 @@ export default class Git {
     )
   }
 
+  async checkout(newBranch: string) {
+    core.debug(`Creating Branch ${newBranch}`)
+
+    await execCmd(`git checkout -b "${newBranch}"`, this.workingDir)
+  }
+
   async createPrBranch() {
     const prefix = (BRANCH_PREFIX as string).replace(
       "SOURCE_REPO_NAME",

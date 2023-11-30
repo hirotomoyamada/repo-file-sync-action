@@ -1,7 +1,7 @@
 import { existsSync } from "fs"
 import * as core from "@actions/core"
 import type { Dict } from "./assertion"
-import { isArray } from "./assertion"
+import { isArray, isString } from "./assertion"
 import { context, parseConfig } from "./config"
 import Git from "./git"
 import {
@@ -14,6 +14,7 @@ import {
 } from "./helpers"
 
 const {
+  TARGET_BRANCH,
   OVERWRITE_EXISTING_PR,
   DRY_RUN,
   COMMIT_EACH_FILE,
@@ -54,6 +55,8 @@ const run = async (): Promise<void> => {
 
           await git.setPrWarning()
         }
+      } else if (isString(TARGET_BRANCH)) {
+        await git.checkout(TARGET_BRANCH)
       }
 
       core.info(`Locally syncing file(s) between source and target repository`)

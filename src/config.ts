@@ -34,6 +34,7 @@ try {
       type: "array",
       disableable: true,
     }),
+    TARGET_BRANCH: getInput("TARGET_BRANCH", {}),
     ASSIGNEES: getInput("ASSIGNEES", {
       type: "array",
     }),
