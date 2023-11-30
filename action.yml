@@ -1,6 +1,6 @@
-name: 'Repo File Sync Action'
+name: "Repo File Sync Action"
 description: "GitHub Actions that sync's two (or more) repos."
-author: 'Hirotomo Yamada'
+author: "Hirotomo Yamada"
 
 inputs:
   GH_PAT:
@@ -65,9 +65,9 @@ inputs:
     required: false
 
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"
 
 branding:
-  icon: 'git-pull-request'
-  color: 'gray-dark'
+  icon: "git-pull-request"
+  color: "gray-dark"
