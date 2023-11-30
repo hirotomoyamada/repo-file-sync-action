@@ -1,0 +1,16 @@
+export type Primitive = null | undefined | string | number | boolean | symbol | bigint;
+export type Dict<T = any> = Record<string, T>;
+export type StringLiteral = string & {};
+export type Union<T> = T | StringLiteral;
+export declare const isNumber: (value: any) => value is number;
+export declare const isNotNumber: (value: any) => boolean;
+export declare const isNumeric: (value: any) => boolean;
+export declare const isString: (value: any) => value is string;
+export declare const isUndefined: (value: any) => value is undefined;
+export declare const isNull: (value: any) => value is null;
+export declare const isObject: <T extends Dict<any>>(value: any) => value is T;
+export declare const isArray: <T extends any[]>(value: any) => value is T;
+export declare const isEmpty: (value: any) => boolean;
+export declare const isFunction: <T extends Function = Function>(value: any) => value is T;
+export declare const isUnit: (value: any) => boolean;
+export declare const cast: <T>(value: any) => T;
